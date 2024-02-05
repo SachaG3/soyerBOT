@@ -2,6 +2,9 @@ import discord
 from discord.ext import commands,tasks
 import random
 import asyncio
+from dotenv import load_dotenv
+import os
+load_dotenv()
 
 bot = commands.Bot(command_prefix="^^", description="Bot de Soyergold")
 
@@ -38,4 +41,4 @@ async def on_message_edit(before, after):
 
 
 
-bot.run('NzYyMzYwMTAyODk2MDA5MjU2.X3oBLA.gAHU-s-VHg1DTiUKvI7zmBSJwmo')
+bot.run(os.environ.get("TOKEN_DISCORD"))

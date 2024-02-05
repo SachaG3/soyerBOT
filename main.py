@@ -6,8 +6,10 @@ import basique
 import repeat
 import profile
 import jeux
+from dotenv import load_dotenv
+import os
+load_dotenv()
 
-# import admins
 # import admins
 intents = discord.Intents.default()
 intents.members = True
@@ -26,4 +28,5 @@ async def on_ready():
     await bot.add_cog(profile.Profile(bot))
     await bot.add_cog(basique.commandeBasique(bot))
     await bot.add_cog(jeux.Jeux(bot))
-bot.run('NzYyMzYwMTAyODk2MDA5MjU2.GoBW9M.6rInUq3IWmrr-SykX6-VP2fGWGcaJkKdVfvZkE')
+
+bot.run(os.environ.get("TOKEN_DISCORD"))
