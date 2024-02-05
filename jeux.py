@@ -90,10 +90,10 @@ class Jeux(commands.Cog):
         try:
             guess = await self.bot.wait_for('message', check=is_correct, timeout=5.0)
         except asyncio.TimeoutError:
-            return await ctx.send('écrit plus vite fdp {}.'.format(answer))
+            return await ctx.send('écrit plus vite  {}.'.format(answer))
 
         if int(guess.content) == answer:
-            await ctx.send('mouais tu a gagné ')
+            await ctx.send('Mouais tu à gagné ')
             a = profil.profiles(self, ctx.author, ctx.author.id, ctx, 10)
         else:
             await ctx.send("HA HA tu est nul c'est {}.".format(answer))
@@ -158,7 +158,7 @@ class Jeux(commands.Cog):
                     if Joueur-(j*13) >21:
 
                         stop = 1
-                        await ctx.send('tu à dépassé 21 tu ne peut plus jouer')
+                        await ctx.send('Tu as dépassé 21, tu ne peux plus jouer.')
 
                     else:
 
@@ -167,7 +167,7 @@ class Jeux(commands.Cog):
 
                         Joueur = Joueur + carte10[1]
 
-                        message= f'nouvelle carte qui est:\n**{Carte(carte10[0], str(carte10[2]))}**'
+                        message= f'Nouvelle carte qui est:\n**{Carte(carte10[0], str(carte10[2]))}**'
                         await ctx.send(message)
 
                         if Joueur>21 and j==0:
@@ -194,25 +194,26 @@ class Jeux(commands.Cog):
 
         if Croupier > 21 and Joueur < 22:
 
-            message = f"Gagné tu as **{Joueur}** point et le Croupier as **{Croupier}** point "
+            message = f"Gagné, tu as **{Joueur}** points et le Croupier a **{Croupier}** points."
             await ctx.send(message)
             a = profil.profiles(self, ctx.author, ctx.author.id, ctx, 10)
 
-        elif Joueur<Croupier or Joueur>21:
+        elif Joueur < Croupier or Joueur > 21:
 
-            message = f"Perdue le Croupier as **{Croupier}** point et tu as **{Joueur}** point "
+            message = f"Perdu, le Croupier a **{Croupier}** points et tu as **{Joueur}** points."
             await ctx.send(message)
 
         elif Joueur > Croupier:
 
-            message = f"Gagné tu as **{Joueur}** point et le Croupier as **{Croupier}** point "
+            message = f"Gagné, tu as **{Joueur}** points et le Croupier a **{Croupier}** points."
             await ctx.send(message)
             a = profil.profiles(self, ctx.author, ctx.author.id, ctx, 10)
 
-        elif Croupier==Joueur:
+        elif Croupier == Joueur:
 
-            message = f"Egalité le Croupier as **{Croupier}** point et tu as **{Joueur}** point "
+            message = f"Égalité, le Croupier a **{Croupier}** points et tu as **{Joueur}** points."
             await ctx.send(message)
+
 
 
 
