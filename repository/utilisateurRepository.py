@@ -31,7 +31,7 @@ def get_all_users():
 def update_score(user_id, score):
     conn = pymysql.connect(**db_config)
     cursor = conn.cursor()
-    query = "UPDATE utilisateurs SET score = score + %s WHERE id = %s"
+    query = "UPDATE utilisateurs SET score = score + %s WHERE idUtilisateur = %s"
     cursor.execute(query, (score, user_id))
     conn.commit()
     conn.close()
