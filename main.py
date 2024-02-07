@@ -8,6 +8,9 @@ import profile
 import jeux
 from dotenv import load_dotenv
 import os
+
+import valorant
+
 load_dotenv()
 
 # import admins
@@ -25,6 +28,7 @@ async def on_ready():
     print('------')
 
     await bot.add_cog(repeat.Repeat(bot))
+    await bot.add_cog(valorant.Valorant(bot))
     await bot.add_cog(profile.Profile(bot))
     await bot.add_cog(basique.commandeBasique(bot))
     await bot.add_cog(jeux.Jeux(bot))

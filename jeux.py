@@ -141,6 +141,7 @@ class Jeux(commands.Cog):
 
         Joueur = Joueur + carte10[1] + carte11[1]
 
+
         while fin==0:
 
             if stop==0:
