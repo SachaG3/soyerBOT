@@ -26,7 +26,6 @@ class MyBot(commands.Bot):
         super().__init__(command_prefix, description=description, intents=intents)
 
     async def log_event(self, event_type, description):
-        # Utilisez le repository pour ajouter des logs de manière asynchrone
         await self.loop.run_in_executor(None, add_log, event_type, description)
 
     async def on_ready(self):
@@ -58,7 +57,6 @@ class MyBot(commands.Bot):
                 await self.loop.run_in_executor(None, new_user, idUtilisateur, pseudo)
                 userId = idUtilisateur
             else:
-                # Assurez-vous que cette ligne est correcte selon la structure de votre fonction get_user_by_idUtilisateur
                 userId = utilisateur['id'] if isinstance(utilisateur, dict) else utilisateur[0]
             await self.loop.run_in_executor(None, new_message_repo, userId, message.content)
         except Exception as e:
