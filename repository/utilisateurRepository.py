@@ -10,7 +10,7 @@ def get_user_by_id(id):
     conn.close()
     return user
 
-def get_user_by_id_utilisateur(id_utilisateur):
+def get_user_by_idUtilisateur(id_utilisateur):
     conn = pymysql.connect(**db_config)
     cursor = conn.cursor()
     query = "SELECT * FROM utilisateurs WHERE id_utilisateur = %s"
