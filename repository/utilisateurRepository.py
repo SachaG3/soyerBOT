@@ -10,11 +10,11 @@ def get_user_by_id(id):
     conn.close()
     return user
 
-def get_user_by_idUtilisateur(idUtilisateur):
+def get_user_by_id_utilisateur(id_utilisateur):
     conn = pymysql.connect(**db_config)
     cursor = conn.cursor()
-    query = "SELECT * FROM utilisateurs WHERE idUtilisateur = %s"
-    cursor.execute(query, (idUtilisateur,))
+    query = "SELECT * FROM utilisateurs WHERE id_utilisateur = %s"
+    cursor.execute(query, (id_utilisateur,))
     user = cursor.fetchone()
     conn.close()
     return user
@@ -31,7 +31,7 @@ def get_all_users():
 def update_score(user_id, score):
     conn = pymysql.connect(**db_config)
     cursor = conn.cursor()
-    query = "UPDATE utilisateurs SET score = score + %s WHERE idUtilisateur = %s"
+    query = "UPDATE utilisateurs SET score = score + %s WHERE id_utilisateur = %s"
     cursor.execute(query, (score, user_id))
     conn.commit()
     conn.close()
@@ -39,7 +39,7 @@ def update_score(user_id, score):
 def new_user(user_id,name):
     conn = pymysql.connect(**db_config)
     cursor = conn.cursor()
-    query = "INSERT INTO utilisateurs (idUtilisateur,pseudo) VALUES (%s,%s)"
+    query = "INSERT INTO utilisateurs (id_utilisateur,pseudo) VALUES (%s,%s)"
     cursor.execute(query, (user_id,name))
     conn.commit()
     conn.close()
@@ -47,7 +47,7 @@ def new_user(user_id,name):
 def delete_user(user_id):
     conn = pymysql.connect(**db_config)
     cursor = conn.cursor()
-    query = "DELETE FROM utilisateurs WHERE idUtilisateur = %s"
+    query = "DELETE FROM utilisateurs WHERE id_utilisateur = %s"
     cursor.execute(query, (user_id,))
     conn.commit()
     conn.close()
