@@ -4,7 +4,7 @@ import random
 import logging
 log = logging.getLogger("bot.moderation")
 import asyncio
-from profilePartage import profil
+from profile.profilePartage import profil
 import pymysql
 from db_config import db_config
 
