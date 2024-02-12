@@ -1,13 +1,11 @@
-import discord
-from discord.ext import commands,tasks
+from discord.ext import commands
 import random
 import logging
 log = logging.getLogger("bot.moderation")
 import asyncio
-from profilePartage import profil
-from jeux2 import Carte
-from jeux2 import Point
-from jeux2 import carte
+from profile.profilePartage import profil
+from game.jeux2 import Carte
+from game.jeux2 import carte
 
 class Jeux(commands.Cog):
     def __init__(self, bot):

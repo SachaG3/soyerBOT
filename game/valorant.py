@@ -2,12 +2,11 @@ import asyncio
 import logging
 
 import aiohttp
-import discord
 from discord.ext import commands
 import pymysql.cursors
 import random
 from db_config import db_config
-from profilePartage import profil
+from profile.profilePartage import profil
 
 log = logging.getLogger("bot.moderation")
 
