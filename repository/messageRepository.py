@@ -2,9 +2,6 @@ import csv
 
 import pymysql
 from db_config import db_config
-from repository.listGuildRepository import get_guild, add_guild
-from repository.utilisateurs_guildsRepository import add_user_to_guild_if_not_exists
-
 
 def get_messages():
     connection = pymysql.connect(**db_config)
