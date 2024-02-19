@@ -11,75 +11,63 @@ class Jeux(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @commands.command(
+        help="""Lancez-vous dans un jeu de devinettes où vous devez trouver le bon nombre entre 1 et 1000.
 
-    @commands.command()
-    async def juste(self,ctx):
+        **Comment jouer :**
+        - Lancez la commande et attendez le message du bot vous invitant à choisir un nombre.
+        - Vous avez 15 secondes pour répondre en envoyant votre devinette.
+        - Le bot répondra avec un signe '+' si votre nombre est inférieur au nombre cible, ou un '-' si votre nombre est supérieur.
+
+        **Règles :**
+        - Continuez à deviner jusqu'à ce que vous trouviez le bon nombre.
+        - Si vous ne répondez pas dans les 15 secondes, le jeu se termine et le nombre correct sera révélé.
+
+        **Objectif :**
+        Trouvez le nombre correct avec le moins de tentatives possible pour maximiser vos points."""
+    )
+    async def juste(self, ctx):
         answer = random.randint(1, 1000)
-        while 0 == 0:
-            a = 0 + 1
-            await ctx.send('choisi un nombre entre 1 et 1000.')
+        await ctx.send('Choisis un nombre entre 1 et 1000.')
 
-            def is_correct(m):
-                return m.author == ctx.author and m.content.isdigit()
+        def is_correct(m):
+            return m.author == ctx.author and m.content.isdigit()
 
+        while True:
             try:
                 guess = await self.bot.wait_for('message', check=is_correct, timeout=15.0)
             except asyncio.TimeoutError:
-                return await ctx.send('écrit plus vite {}.'.format(answer))
+                return await ctx.send(f'Trop lent ! La réponse était {answer}.')
 
             if int(guess.content) > answer:
                 await ctx.send('-')
             elif int(guess.content) < answer:
                 await ctx.send("+")
-            elif int(guess.content) == answer:
-                await ctx.send("bien joué trouvé ")
-                a = profil.profiles(self, ctx.author, ctx.author.id, ctx, 3)
-                return
+            else:
+                await ctx.send("Bien joué, tu as trouvé le nombre !")
+                profil.profiles(self, ctx.author, ctx.author.id, ctx, 3)
+                break
 
-            @commands.command()
-            async def Juste2(self, ctx):
-                async def vrai(self, ctx):
-                    await ctx.send("choisi la limite qui doit être supérieure ou égale 1")
+    @commands.command(
+        help="""Tentez votre chance en devinant un nombre entre 1 et 10. Vous avez une seule chance pour trouver le bon nombre sélectionné aléatoirement par le bot.
 
-                    def is_correct(m):
-                        return m.author == ctx.author and m.content.isdigit()
+        **Comment jouer :**
+        - Après avoir lancé la commande, vous recevrez un message vous invitant à choisir un nombre entre 1 et 10.
+        - Vous avez 5 secondes pour répondre en envoyant le nombre choisi.
 
-                    try:
-                        choix = await self.bot.wait_for('message', check=is_correct, timeout=15.0)
-                    except asyncio.TimeoutError:
-                        return await ctx.send('écrit plus vite {}.'.format())
-                    return int(choix.content) if int(choix.content) > 0 else True
+        **Règles :**
+        - Si vous devinez correctement du premier coup, vous gagnez !
+        - Si vous ne répondez pas dans le temps imparti (5 secondes), le jeu prend fin et le bon nombre sera révélé.
+        - Si votre réponse est incorrecte, le bon nombre sera également révélé.
 
-                choix = await vrai(self, ctx)
+        **Récompenses :**
+        - En cas de victoire, vous recevrez des points d'expérience ou une récompense spécifique (à définir par l'administrateur du bot).
 
-                if choix is True:
-                    choix = await vrai(self, ctx)
-
-                answer = random.randint(1, choix)
-                while 0 == 0:
-                    a = 0 + 1
-                    message = f"choisi un nombre entre 1 et **{int(choix.content)}**"
-                    await ctx.send(message)
-
-            def is_correct(m):
-                return m.author == ctx.author and m.content.isdigit()
-
-            try:
-                guess = await self.bot.wait_for('message', check=is_correct, timeout=15.0)
-            except asyncio.TimeoutError:
-                return await ctx.send('écrit plus vite {}.'.format(answer))
-
-            if int(guess.content) > answer:
-                await ctx.send('-')
-            elif int(guess.content) < answer:
-                await ctx.send("+")
-            elif int(guess.content) == answer:
-                await ctx.send("bien joué trouvé ")
-                a = profil.profiles(self, ctx.author, ctx.author.id, ctx, 1)
-                return
-    @commands.command()
+        **Objectif :**
+        Montrez votre flair en trouvant le bon nombre du premier coup !"""
+    )
     async def usd(self, ctx):
-        await ctx.send('choisi un nombre entre 1 et 10.')
+        await ctx.send('Choisis un nombre entre 1 et 10.')
 
         def is_correct(m):
             return m.author == ctx.author and m.content.isdigit()
@@ -88,15 +76,30 @@ class Jeux(commands.Cog):
         try:
             guess = await self.bot.wait_for('message', check=is_correct, timeout=5.0)
         except asyncio.TimeoutError:
-            return await ctx.send('écrit plus vite  {}.'.format(answer))
+            return await ctx.send('Trop lent ! La réponse était {}.'.format(answer))
 
         if int(guess.content) == answer:
-            await ctx.send('Mouais tu à gagné ')
-            a = profil.profiles(self, ctx.author, ctx.author.id, ctx, 10)
+            await ctx.send('Bravo, tu as gagné !')
+            profil.profiles(self, ctx.author, ctx.author.id, ctx, 10)
         else:
-            await ctx.send("HA HA tu est nul c'est {}.".format(answer))
+            await ctx.send("Dommage, c'était {}. Mieux vaut tenter ta chance la prochaine fois !".format(answer))
 
-    @commands.command()
+    @commands.command(
+        name='BJ',
+        help="""Jouez au Blackjack contre le bot. Le but du jeu est d'atteindre un total de points le plus proche de 21 sans le dépasser.
+
+        **Instructions :**
+        - Cliquez sur `1` pour piocher une nouvelle carte.
+        - Cliquez sur `2` pour arrêter votre tour et voir si vous avez gagné.
+
+        **Règles :**
+        - Toutes les figures (Valet, Dame, Roi) valent 10 points.
+        - L'As peut valoir 1 ou 11 points, selon ce qui est le plus avantageux pour le joueur.
+        - Pour faire un 'Blackjack', il faut obtenir un As et une carte valant 10 points (10 ou une figure) avec vos deux premières cartes.
+
+        **Objectif :**
+        Être le plus proche de 21 sans dépasser ce total. Le joueur avec un total de points supérieur à 21 perd immédiatement."""
+    )
     async def BJ(self, ctx):
         """
         cliquer sur 1 permet de piocher une nouvelle carte

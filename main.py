@@ -25,8 +25,7 @@ intents.message_content = True
 
 class MyBot(commands.Bot):
     def __init__(self, command_prefix, description=None, intents=None):
-        super().__init__(command_prefix, description=description, intents=intents)
-
+        super().__init__(command_prefix, description=description, intents=intents, help_command=CustomHelpCommand())
     async def log_event(self, event_type, description):
         await self.loop.run_in_executor(None, add_log, event_type, description)
 
@@ -40,6 +39,33 @@ class MyBot(commands.Bot):
         await self.log_event("Bot Status", "Le bot a été reconnecté au serveur Discord.")
 
     async def on_guild_join(self, guild):
+        for membre in guild.members:
+            user_id = membre.id
+            guild_id = membre.guild.id
+
+            try:
+                user_in_db = await self.loop.run_in_executor(None, get_user_by_idUtilisateur, user_id)
+                if not user_in_db:
+                    await self.log_event("Ajout utilisateur", f"Ajout d'un nouvel utilisateur: {user_id}")
+                    await self.loop.run_in_executor(None, new_user, user_id, membre.name)
+                else:
+                    await self.log_event("Ajout utilisateur",
+                                         f"L'utilisateur {user_id} existe déjà dans la base de données.")
+
+                guild_in_db = await self.loop.run_in_executor(None, get_guild, guild_id)
+                if not guild_in_db:
+                    await self.log_event("Ajout guilde", f"Ajout d'une nouvelle guilde: {guild_id}")
+                    await self.loop.run_in_executor(None, add_guild, guild_id, membre.guild.name)
+                else:
+                    await self.log_event("Ajout guilde", f"La guilde {guild_id} existe déjà dans la base de données.")
+
+                await self.log_event("Ajout utilisateur à guilde",
+                                     f"Ajout de l'utilisateur {user_id} à la guilde {guild_id}.")
+                await self.loop.run_in_executor(None, new_utilisateur_guild, user_id, guild_id)
+            except Exception as e:
+                await self.log_event("Erreur",
+                                     f"Une erreur est survenue lors de l'ajout de l'utilisateur à la guilde : {e}")
+
         await self.log_event("Bot Status", f"Le bot a rejoint le serveur : {guild.name}")
 
     async def on_guild_remove(self, guild):
@@ -154,6 +180,41 @@ class MyBot(commands.Bot):
         except Exception as e:
             a = f"Erreur lors de l'insertion du message modifié dans la base de données : {e}"
             await self.log_event("Bot error", a)
+
+
+class CustomHelpCommand(commands.HelpCommand):
+    def __init__(self):
+        super().__init__()
+
+    def get_command_signature(self, command):
+        return f"{self.clean_prefix}{command.qualified_name} {command.signature}"
+
+    async def send_bot_help(self, mapping):
+        embed = discord.Embed(title="Aide du bot", description="Voici toutes les commandes disponibles :",
+                              color=discord.Color.blue())
+        for cog, commands in mapping.items():
+            if cog:
+                commands_str = ", ".join(f"`{c.name}`" for c in commands)
+                if commands_str:
+                    embed.add_field(name=cog.qualified_name, value=commands_str, inline=False)
+        await self.get_destination().send(embed=embed)
+
+    async def send_cog_help(self, cog):
+        embed = discord.Embed(title=f"{cog.qualified_name}", description=cog.description, color=discord.Color.green())
+        for command in cog.get_commands():
+            embed.add_field(name=self.get_command_signature(command), value=command.help or "Pas de description...",
+                            inline=False)
+        await self.get_destination().send(embed=embed)
+
+    async def send_command_help(self, command):
+        embed = discord.Embed(title=f"Aide pour la commande: `{command.name}`", description=command.help or "Aucune aide disponible.", color=discord.Color.blue())
+        embed.add_field(name="Syntaxe", value=f"`{self.context.prefix}{command.name} {command.signature}`", inline=False)
+        if command.aliases:
+            embed.add_field(name="Alias", value=", ".join(command.aliases), inline=False)
+        # Vous pouvez également ajouter un champ pour des exemples d'utilisation si vous les avez définis dans la docstring de la commande
+        await self.get_destination().send(embed=embed)
+
+
 
 
 bot = MyBot(command_prefix="^^", description="Bot de Soyer", intents=intents)
