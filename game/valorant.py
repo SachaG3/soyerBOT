@@ -2,12 +2,11 @@ import asyncio
 import logging
 
 import aiohttp
-import discord
 from discord.ext import commands
 import pymysql.cursors
 import random
 from db_config import db_config
-from profilePartage import profil
+from profile.profilePartage import profil
 
 log = logging.getLogger("bot.moderation")
 
@@ -52,7 +51,22 @@ class Valorant(commands.Cog):
         rank = get_valorant_rank(username, tag)
         await ctx.send(f"Infos de rang pour {rank}")
 
-    @commands.command()
+    @commands.command(
+        help="""Lance un défi où vous devez deviner le nom du skin Valorant affichée.
+
+        **Comment participer :**
+        - Utilisez la commande et une image de skin Valorant sera affichée.
+        - Quatre noms de skin seront proposés comme options.
+        - Réagissez avec l'emoji correspondant à votre choix.
+
+        **Règles :**
+        - Vous avez 60 secondes pour faire votre choix.
+        - Choisir la bonne réponse vous apportera des points.
+        - Une réponse incorrecte ou un délai dépassé vous donnera la bonne réponse sans points.
+
+        **Objectif :**
+        Testez vos connaissances des skin Valorant et gagnez des points en devinant correctement."""
+    )
     async def skin(self, ctx):
         correct_weapon = self.get_weapon_with_image()
         if not correct_weapon:
