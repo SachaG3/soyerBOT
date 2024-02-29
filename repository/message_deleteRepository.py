@@ -29,11 +29,11 @@ def get_message_by_userId(userId):
     connection.close()
     return messages
 
-def new_message(userId, message):
+def new_message(userId, message,id_guild=None):
     connection = pymysql.connect(**db_config)
     cursor = connection.cursor()
-    query = "INSERT INTO message_delete (userId, message) VALUES (%s, %s)"
-    cursor.execute(query, (userId, message))
+    query = "INSERT INTO message_delete (userId, message,id_guild) VALUES (%s, %s,%s)"
+    cursor.execute(query, (userId, message,id_guild))
     connection.commit()
     connection.close()
 

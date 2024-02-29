@@ -30,11 +30,11 @@ def get_message_by_userId(userId):
     connection.close()
     return messages
 
-def new_message(userId, old_message, new_message):
+def new_message(userId, old_message, new_message, id_guild=None):
     connection = pymysql.connect(**db_config)
     cursor = connection.cursor()
-    query = "INSERT INTO message_edit (userId, message, new_message) VALUES (%s, %s, %s)"
-    cursor.execute(query, (userId, old_message, new_message))
+    query = "INSERT INTO message_edit (userId, message, new_message, id_guild) VALUES (%s, %s, %s,%s)"
+    cursor.execute(query, (userId, old_message, new_message,id_guild))
     connection.commit()
     connection.close()
 
@@ -47,6 +47,6 @@ def export_all_user_message_to_csv(user_id):
     messages = cursor.fetchall()
     with open('messages.csv', 'w', newline='', encoding='utf-8') as file:  # Ajout de newline='' pour éviter les lignes vides dans le CSV
         writer = csv.writer(file)
-        writer.writerow(['id', 'message', 'new_message'])  # Ajout de 'new_message' dans l'en-tête
+        writer.writerow(['id', 'message', 'new_message','id_guild'])  # Ajout de 'new_message' dans l'en-tête
         for message in messages:
-            writer.writerow([message['id'], message['message'], message.get('new_message', '')])  # Utiliser get() pour la compatibilité
+            writer.writerow([message['id'], message['message'], message.get('new_message', ''),message['id_guild']])

@@ -30,8 +30,6 @@ class MyBot(commands.Bot):
         await self.loop.run_in_executor(None, add_log, event_type, description)
 
     async def on_ready(self):
-        print('Le bot est OK !!!!')
-        print('------')
         await self.log_event("Bot Status", "Le bot est connecté et prêt.")
         await self.setup_cogs()
 
@@ -58,10 +56,11 @@ class MyBot(commands.Bot):
                     await self.loop.run_in_executor(None, add_guild, guild_id, membre.guild.name)
                 else:
                     await self.log_event("Ajout guilde", f"La guilde {guild_id} existe déjà dans la base de données.")
-
+                user = await self.loop.run_in_executor(None, get_user_by_idUtilisateur, user_id)
                 await self.log_event("Ajout utilisateur à guilde",
                                      f"Ajout de l'utilisateur {user_id} à la guilde {guild_id}.")
-                await self.loop.run_in_executor(None, new_utilisateur_guild, user_id, guild_id)
+
+                await self.loop.run_in_executor(None, new_utilisateur_guild, user['id'], guild_id)
             except Exception as e:
                 await self.log_event("Erreur",
                                      f"Une erreur est survenue lors de l'ajout de l'utilisateur à la guilde : {e}")
@@ -132,10 +131,17 @@ class MyBot(commands.Bot):
     async def on_message(self, message):
 
         idUtilisateur = message.author.id
-        guild_id = message.guild.id
-        guild_name = message.guild.name
+        if not message.guild:
+            guild_id=0
+        else:
+            guild_id = message.guild.id
+            guild_name = message.guild.name
         guild = get_guild(guild_id)
         pseudo = message.author.name
+
+
+
+
         try:
             utilisateur = await self.loop.run_in_executor(None, get_user_by_idUtilisateur, idUtilisateur)
             if not utilisateur:
@@ -143,7 +149,7 @@ class MyBot(commands.Bot):
                 userId = utilisateur['id'] if isinstance(utilisateur, dict) else utilisateur[0]
             else:
                 userId = utilisateur['id'] if isinstance(utilisateur, dict) else utilisateur[0]
-            await self.loop.run_in_executor(None, new_message_repo, userId, message.content)
+            await self.loop.run_in_executor(None, new_message_repo, userId, message.content,guild_id)
 
         except Exception as e:
             a = f"Erreur lors de l'insertion du message ou de l'utilisateur dans la base de données : {e}"
@@ -154,6 +160,10 @@ class MyBot(commands.Bot):
         await self.process_commands(message)
 
     async def on_message_delete(self, message):
+        if not message.guild:
+            guild_id=0
+        else:
+            guild_id = message.guild.id
         if message.author.bot:
             return
 
@@ -162,12 +172,16 @@ class MyBot(commands.Bot):
             utilisateur = await self.loop.run_in_executor(None, get_user_by_idUtilisateur, idUtilisateur)
             if utilisateur:
                 userId = utilisateur['id'] if isinstance(utilisateur, dict) else utilisateur[0]
-                await self.loop.run_in_executor(None, new_message_delete_repo, userId, message.content)
+                await self.loop.run_in_executor(None, new_message_delete_repo, userId, message.content,guild_id)
         except Exception as e:
             a = f"Erreur lors de l'insertion du message supprimé dans la base de données : {e}"
             await self.log_event("Bot error", a)
 
     async def on_message_edit(self, before, after):
+        if not before.guild:
+            guild_id=0
+        else:
+            guild_id = before.guild.id
         if before.author.bot:
             return
 
@@ -176,7 +190,7 @@ class MyBot(commands.Bot):
             utilisateur = await self.loop.run_in_executor(None, get_user_by_idUtilisateur, idUtilisateur)
             if utilisateur and before.content != after.content:
                 userId = utilisateur['id'] if isinstance(utilisateur, dict) else utilisateur[0]
-                await self.loop.run_in_executor(None, new_message_edit, userId, before.content, after.content)
+                await self.loop.run_in_executor(None, new_message_edit, userId, before.content, after.content,guild_id)
         except Exception as e:
             a = f"Erreur lors de l'insertion du message modifié dans la base de données : {e}"
             await self.log_event("Bot error", a)
@@ -211,7 +225,6 @@ class CustomHelpCommand(commands.HelpCommand):
         embed.add_field(name="Syntaxe", value=f"`{self.context.prefix}{command.name} {command.signature}`", inline=False)
         if command.aliases:
             embed.add_field(name="Alias", value=", ".join(command.aliases), inline=False)
-        # Vous pouvez également ajouter un champ pour des exemples d'utilisation si vous les avez définis dans la docstring de la commande
         await self.get_destination().send(embed=embed)
 
 
