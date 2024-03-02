@@ -20,8 +20,8 @@ def new_token(id_utilisateur):
     conn = pymysql.connect(**db_config)
     cursor = conn.cursor()
 
-    query = "INSERT INTO token_discord (token, id_utilisateur, date_creation) VALUES (%s, %s, %s)"
-    cursor.execute(query, (token, id_utilisateur, datetime.now()))
+    query = "INSERT INTO token_discord (token, id_utilisateur) VALUES (%s, %s)"
+    cursor.execute(query, (token, id_utilisateur))
 
     conn.commit()
     conn.close()
