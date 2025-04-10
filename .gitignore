@@ -1,8 +1,35 @@
+# Fichiers d'environnement
 .env
-env
+env/
 /env
-.env
 /.venv
+venv/
+
+# Fichiers Python
 __pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+*.egg
+
+# Fichiers Rust
+/target/
+Cargo.lock
+**/*.rs.bk
+
+# Fichiers système
 .DS_Store
-/.ideagit add .gitignore
+Thumbs.db
+
+# Fichiers IDE
+/.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs et bases de données
+*.log
+*.sqlite
+*.db
